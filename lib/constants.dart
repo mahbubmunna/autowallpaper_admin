@@ -17,6 +17,7 @@ const addButtonColor = primaryAppColor;
 const categoryTextStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 20,);
 const appBarTitleTextStyle = TextStyle( fontSize: 20, );
 const addButtonTextStyle = TextStyle(color: Colors.white);
+const errorTextStyle = TextStyle(color: Colors.red, fontSize: 30);
 
 //Dimension
 const categoryItemHeight = 120.0;

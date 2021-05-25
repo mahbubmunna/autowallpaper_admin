@@ -30,6 +30,31 @@
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+       https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-firestore.js"></script>
+
+  <script>
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  var firebaseConfig = {
+    apiKey: "AIzaSyAoexZz7sqsFI_H5Wgb1_boEgWbtu-HAEs",
+    authDomain: "auto-wallpaper-c1936.firebaseapp.com",
+    databaseURL: "https://auto-wallpaper-c1936-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "auto-wallpaper-c1936",
+    storageBucket: "auto-wallpaper-c1936.appspot.com",
+    messagingSenderId: "531117460736",
+    appId: "1:531117460736:web:1b1d194cf3593675b177e5",
+    measurementId: "G-9PKEH0LRDT"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+  </script>
   <script>
     var serviceWorkerVersion = null;
     var scriptLoaded = false;
