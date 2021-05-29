@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 
 @immutable
@@ -40,11 +42,11 @@ class AddThirdCategoryEvent extends HomeScreenEvent{
 class FetchImagesByCategoryEvent extends HomeScreenEvent{}
 
 class AddImageByCategoryEvent extends HomeScreenEvent{
-  final String imageURL;
+  final Uint8List binaryImage;
   final BuildContext context;
   final String thirdCategoryDocId;
 
   AddImageByCategoryEvent({required this.context,
-    required this.imageURL,
+    required this.binaryImage,
     required this.thirdCategoryDocId});
 }

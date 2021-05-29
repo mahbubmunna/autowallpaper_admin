@@ -21,3 +21,7 @@ const errorTextStyle = TextStyle(color: Colors.red, fontSize: 30);
 
 //Dimension
 const categoryItemHeight = 120.0;
+
+//Tokens
+const imageTokenOne = 'ba7b1796e4a0f30696cc1066498d9cb0116cbfbf';
+const imageTokenTwo = '6d207e02198a847aa98d0a2a901485a5';

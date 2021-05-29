@@ -1,9 +1,17 @@
 
+import 'dart:convert';
+import 'dart:html';
+import 'dart:typed_data';
+
+import 'package:autowallpaper_admin/constants.dart';
+import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 import 'package:autowallpaper_admin/model/category.dart';
 import 'package:autowallpaper_admin/model/image_category.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logger/logger.dart';
 
-class HomePageDataRepository{
+class HomePageDataRepository {
   static const MainCategory = 'maincategories';
   static const SecondaryCategory = 'secondcategories';
   static const LastCategory = 'lastcategories';
@@ -18,7 +26,7 @@ class HomePageDataRepository{
   static getMainCategories() async =>
       await FirebaseFirestore.instance
           .collection(MainCategoryPath)
-          .get().then((collection){
+          .get().then((collection) {
         var categoryList = <Category>[];
         collection.docs.forEach((element) {
           categoryList.add(
@@ -34,12 +42,12 @@ class HomePageDataRepository{
   static getSecondaryCategories() async =>
       await FirebaseFirestore.instance
           .collection(SecondaryCategoryPath)
-          .get().then((collection){
+          .get().then((collection) {
         var categoryList = <Category>[];
         collection.docs.forEach((element) {
           categoryList.add(
               Category(
-                documentId: element.id,
+                  documentId: element.id,
                   name: element.data()[Name],
                   subCategories: element.data()[LastCategory]
               ));
@@ -69,17 +77,16 @@ class HomePageDataRepository{
         .add(data).then((value) => value);
 
     var category = await value.get().then((value) =>
-        Category(documentId: value.id, name: value.data()![Name], subCategories: value.data()![SecondaryCategory]));
+        Category(documentId: value.id,
+            name: value.data()![Name],
+            subCategories: value.data()![SecondaryCategory]));
 
     return category;
   }
 
 
-  static addSecondCategory(
-      String categoryName,
-      String documentId
-      ) async {
-
+  static addSecondCategory(String categoryName,
+      String documentId) async {
     await FirebaseFirestore.instance
         .collection(MainCategoryPath)
         .doc(documentId)
@@ -90,10 +97,8 @@ class HomePageDataRepository{
         .add({"name": categoryName, "lastcategories": []});
   }
 
-  static addThirdCategory(
-      String categoryName,
-      String documentId
-      ) async {
+  static addThirdCategory(String categoryName,
+      String documentId) async {
     await FirebaseFirestore.instance
         .collection(SecondaryCategoryPath)
         .doc(documentId)
@@ -104,19 +109,28 @@ class HomePageDataRepository{
         .add({"name": categoryName, "images": []});
   }
 
-  static addImageToCategory(
-      String imageURL,
-      String documentId
-      ) async {
-    await FirebaseFirestore.instance
-        .collection(LastCategoryPath)
-        .doc(documentId)
-        .update({Images: FieldValue.arrayUnion([imageURL])});
+  addImageToCategory(Uint8List binaryImage,
+      String documentId) async {
+    var response = _getImageUrl(binaryImage);
 
+    // await FirebaseFirestore.instance
+    //     .collection(LastCategoryPath)
+    //     .doc(documentId)
+    //     .update({Images: FieldValue.arrayUnion([imageURL])});
+
+  }
+
+  _getImageUrl(Uint8List binaryImage) async {
+    var base64Encoder = Base64Encoder();
+    var imageBase64 = base64Encoder.convert(binaryImage);
+
+    var endPoint = "https://freeimage.host/api/1/upload";
+    var imageBody = {
+      'key': imageTokenOne,
+      'action': 'upload',
+      'source': imageBase64,
+    };
   }
 
 
 }
-
-
-

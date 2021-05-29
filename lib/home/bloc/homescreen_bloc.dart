@@ -93,8 +93,8 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState>{
       yield LoadingState();
       try {
 
-        await HomePageDataRepository.addImageToCategory(
-            event.imageURL,
+        await HomePageDataRepository().addImageToCategory(
+            event.binaryImage,
             event.thirdCategoryDocId);
 
         mainCategory = await HomePageDataRepository.getMainCategories();
@@ -103,7 +103,7 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState>{
 
         yield LoadedState();
       } catch (e, s) {
-        Logger().e('Add Third Category', e, s);
+        Logger().e('Add Image', e, s);
         yield ErrorState();
       }
     }

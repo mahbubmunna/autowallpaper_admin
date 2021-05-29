@@ -7,6 +7,7 @@ import 'package:autowallpaper_admin/widgets/category_item.dart';
 import 'package:autowallpaper_admin/widgets/category_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:progressive_image/progressive_image.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -93,6 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         context: context,
                         secondaryCategoryName: mainSecondaryNameController.text,
                         categoryName: mainCategoryNameController.text));
+                    clearTextOfControllers();
                   },
                   child: Text('Add', style: addButtonTextStyle,),
                 )
@@ -129,6 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           context: context,
                           categoryName: secondCategoryNameController.text,
                           mainCategoryDocId: currentMainCategoryId));
+                      clearTextOfControllers();
                     },
                     child: Text('Add', style: addButtonTextStyle,),
                   )
@@ -165,6 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           context: context,
                           categoryName: thirdCategoryNameController.text,
                           secondCategoryDocId: currentSecondCategoryId));
+                      clearTextOfControllers();
                     },
                     child: Text('Add', style: addButtonTextStyle,),
                   )
@@ -174,38 +178,55 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
   void addNewImageToCategory() {
+    PickedFile? image;
     showDialog(
         context: context,
-        builder: (_) => Dialog(
-          child: Container(
-              height: 250,
-              width: 400,
-              padding: EdgeInsets.symmetric(vertical: 50, horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Add an image to the category', style: categoryTextStyle,),
-                  SizedBox(height: 20,),
-                  TextField(
-                    controller: imageURLController,
-                    decoration: InputDecoration(
-                        hintText: 'Enter the image url'
-                    ),
-                  ),
-                  SizedBox(height: 10,),
-                  MaterialButton(
-                    color: addButtonColor,
-                    onPressed: () {
-                      BlocProvider.of<HomeScreenBloc>(context)
-                          .add(AddImageByCategoryEvent(
-                          context: context,
-                          imageURL: imageURLController.text,
-                          thirdCategoryDocId: currentThirdCategoryId));
-                    },
-                    child: Text('Add', style: addButtonTextStyle,),
+        builder: (context) => Dialog(
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return Container(
+                  height: 350,
+                  width: 400,
+                  padding: EdgeInsets.symmetric(vertical: 50, horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 20,),
+                      Text('Add an image to the category', style: categoryTextStyle,),
+                      SizedBox(height: 20,),
+                      (image !=null)?
+                      Container(
+                          height: 100,
+                          child: Image.network(image!.path))
+                          : Container(height: 100,),
+                      SizedBox(height: 20,),
+                      (image == null)?
+                      MaterialButton(
+                        height: 40,
+                        color: addButtonColor,
+                        onPressed: () async{
+                          image = await ImagePicker().getImage(source: ImageSource.gallery);
+                          if(image != null) print(image!.path);
+                          setState((){});
+                        },
+                        child: Text('Browse', style: addButtonTextStyle,),
+                      )
+                          : MaterialButton(
+                            height: 40,
+                            color: addButtonColor,
+                            child: Text('Upload'),
+                            onPressed: () async{
+                              var binary = await image!.readAsBytes();
+                              BlocProvider.of<HomeScreenBloc>(context)
+                                  .add(AddImageByCategoryEvent(
+                                  context: context,
+                                  binaryImage: binary,
+                                  thirdCategoryDocId: currentThirdCategoryId));
+                        })
+                    ],
                   )
-                ],
-              )
+              );
+            },
           ),
         ));
   }
@@ -410,6 +431,25 @@ class _HomeScreenState extends State<HomeScreen> {
         return Container();
       },
     );
+  }
+
+  void clearTextOfControllers() {
+    mainCategoryNameController.clear();
+    secondCategoryNameController.clear();
+    mainCategoryNameController.clear();
+    thirdCategoryNameController.clear();
+    imageURLController.clear();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    mainCategoryNameController.dispose();
+    secondCategoryNameController.dispose();
+    mainCategoryNameController.dispose();
+    thirdCategoryNameController.dispose();
+    imageURLController.dispose();
   }
 
 
